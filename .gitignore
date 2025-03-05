@@ -1,4 +1,4 @@
 *.env
-*.wav
+*output.wav
 *.toml
 *.json
