@@ -1,7 +1,8 @@
 from groq import Groq
 import os
 
-client = Groq(api_key='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')
+
+client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
 
 def dataSummarized(message):
 
