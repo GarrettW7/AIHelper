@@ -1,14 +1,14 @@
 from groq import Groq
 import os
-from dotenv import load_dotenv
 
 
-# Load environment variables from .env file
-load_dotenv()
+client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
+conversation_history = []
 
-client = Groq(api_key=os.getenv('GROQ_API_KEY'))
-
-def dataSummarized(message):
+def add_to_conversation(role, content):
+    conversation_history.append({"role": role, "content": content})
+    
+def getNataliesOpinion(message):
 
     chat_completion = client.chat.completions.create(
         #
@@ -22,7 +22,7 @@ def dataSummarized(message):
                 "role": "system",
                 # "content": "You give the most correct answer possible. Reguardless of the question, you will always give the most correct answer."
                 # "content" : "You will make fun of anything that i say and then make a haiku to finish your thoughts."
-                "content": "I want to collect my thoughts, and group them into categories. You will listen and then group and summarize the things that are written!"
+                "content": "Your name is natalie! You are a nutrition specialist, but also a great listener. Talk to me about anything!"
             },
             # Set a user message for the assistant to respond to.
             {

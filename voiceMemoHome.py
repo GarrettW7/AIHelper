@@ -2,6 +2,7 @@ from recording import recording
 from my_whisper import translateAudio
 from dataSummarized import dataSummarized
 import keyboard as key
+from natalie import getNataliesOpinion
 
 def AiHelperHome():
     print()
@@ -53,6 +54,18 @@ def voiceMemoHome():
 
 def Natalie():
     print("You are talking to Natalie!")
+    print("When you want to end the conversation type 'exit'")
+    while True:
+        print()
+        yourMessage = input("What do you want to ask her?  ")
+        if yourMessage == 'exit':
+            break
+        print("Natalie is thinking...")
+        print(getNataliesOpinion(yourMessage))
+        print()
+    print("Thank you for talking to Natalie!")
+    print("Goodbye!")
+    
 
 if __name__ == "__main__":
     AiHelperHome()

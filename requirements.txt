@@ -1,0 +1,5 @@
+groq
+keyboard
+whisper
+pyaudio
+python-dotenv
