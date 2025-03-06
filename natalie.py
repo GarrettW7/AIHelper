@@ -7,10 +7,10 @@ conversation_history = []
 
 def add_to_conversation(role, content):
     conversation_history.append({"role": role, "content": content})
-    
+
 def getNataliesOpinion(message):
 
-    chat_completion = client.chat.completions.create(
+    stream = client.chat.completions.create(
         #
         # Required parameters
         #
@@ -20,9 +20,13 @@ def getNataliesOpinion(message):
             # how it should behave throughout the conversation.
             {
                 "role": "system",
-                # "content": "You give the most correct answer possible. Reguardless of the question, you will always give the most correct answer."
-                # "content" : "You will make fun of anything that i say and then make a haiku to finish your thoughts."
+
                 "content": "Your name is natalie! You are a nutrition specialist, but also a great listener. Talk to me about anything!"
+                # "content": "The chat history so far is: " 
+            },
+            {
+                "role": "system",
+                "content": "The chat history so far is: " + str(conversation_history)
             },
             # Set a user message for the assistant to respond to.
             {
@@ -58,8 +62,10 @@ def getNataliesOpinion(message):
         stop=None,
 
         # If set, partial message deltas will be sent.
-        stream=False,
+        stream=True,
     )
 
     # Print the completion returned by the LLM.
-    return(chat_completion.choices[0].message.content)
+    for chunk in stream:
+        conversation_history.append( chunk.choices[0].delta.content, end="")
+        print(chunk.choices[0].delta.content, end="")

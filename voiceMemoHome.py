@@ -61,7 +61,11 @@ def Natalie():
         if yourMessage == 'exit':
             break
         print("Natalie is thinking...")
+        print()
+        print('----------- Natalie\'s Response -----------')
         print(getNataliesOpinion(yourMessage))
+        print()
+        print("(Remeber, you can quit by typing 'exit')")
         print()
     print("Thank you for talking to Natalie!")
     print("Goodbye!")
