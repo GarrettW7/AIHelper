@@ -55,6 +55,7 @@ def voiceMemoHome():
 def Natalie():
     print("You are talking to Natalie!")
     print("When you want to end the conversation type 'exit'")
+    convoHistory = ""
     while True:
         print()
         yourMessage = input("What do you want to ask her?  ")
@@ -63,7 +64,9 @@ def Natalie():
         print("Natalie is thinking...")
         print()
         print('----------- Natalie\'s Response -----------')
-        print(getNataliesOpinion(yourMessage))
+        
+        convoHistory = convoHistory + getNataliesOpinion(yourMessage, convoHistory)
+
         print()
         print("(Remeber, you can quit by typing 'exit')")
         print()

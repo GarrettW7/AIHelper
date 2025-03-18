@@ -8,9 +8,9 @@ conversation_history = []
 def add_to_conversation(role, content):
     conversation_history.append({"role": role, "content": content})
 
-def getNataliesOpinion(message):
+def getNataliesOpinion(message, history):
 
-    stream = client.chat.completions.create(
+    chat_completion = client.chat.completions.create(
         #
         # Required parameters
         #
@@ -26,7 +26,7 @@ def getNataliesOpinion(message):
             },
             {
                 "role": "system",
-                "content": "The chat history so far is: " + str(conversation_history)
+                "content": "The chat history so far is: " + history
             },
             # Set a user message for the assistant to respond to.
             {
@@ -62,10 +62,42 @@ def getNataliesOpinion(message):
         stop=None,
 
         # If set, partial message deltas will be sent.
-        stream=True,
+        stream=False,
     )
 
     # Print the completion returned by the LLM.
-    for chunk in stream:
-        conversation_history.append( chunk.choices[0].delta.content, end="")
-        print(chunk.choices[0].delta.content, end="")
+    finalString = chat_completion.choices[0].message.content
+    print(chat_completion.choices[0].message.content)
+    return f"{history} ---- user:{message} ---- system:{finalString}"
+
+
+
+
+
+# messages=[
+#             # Set an optional system message. This sets the behavior of the
+#             # assistant and can be used to provide specific instructions for
+#             # how it should behave throughout the conversation.
+#             {
+#                 "role": "system",
+
+#                 "content": "Your name is natalie! You are a nutrition specialist, but also a great listener. Talk to me about anything!"
+#                 # "content": "The chat history so far is: " 
+#             },
+#             {
+#                 "role": "system",
+#                 "content": "The chat history so far is: " + history
+#             },
+#             # Set a user message for the assistant to respond to.
+#             {
+#                 "role": "user",
+#                 "content": f"{message}"
+#             }
+#         ],
+
+#  # Print the completion returned by the LLM.
+#     finalString = ""
+#     for message in stream:
+#         print(message['choices'][0]['delta']['content'], end='')
+#         finalString += message['choices'][0]['delta']['content']
+#     return f"{history} ---- user:{message} ---- system:{finalString}"
