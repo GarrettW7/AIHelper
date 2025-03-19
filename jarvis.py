@@ -1,14 +1,38 @@
+# Import the required module for text 
+# to speech conversion
+from gtts import gTTS
+
+# This module is imported so that we can 
+# play the converted audio
+import os
+import subprocess
+
+def speechToText(inputText):
+    # The text that you want to convert to audio
+
+    # Language in which you want to convert
+    language = 'en'
+
+    # Passing the text and language to the engine, 
+    # here we have marked slow=False. Which tells 
+    # the module that the converted audio should 
+    # have a high speed
+    myobj = gTTS(text=inputText, tld= 'co.uk', lang=language, slow=False)
+
+    # Saving the converted audio in a mp3 file named
+    # welcome 
+    myobj.save("response.mp3")
+
+    subprocess.run(["ffplay", "-nodisp", "-autoexit", "response.mp3"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
 from groq import Groq
 import os
 
 
 client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
-conversation_history = []
 
-def add_to_conversation(role, content):
-    conversation_history.append({"role": role, "content": content})
 
-def getNataliesOpinion(message, history):
+def getjarvisesOpinion(message, history):
 
     chat_completion = client.chat.completions.create(
         #
@@ -21,8 +45,13 @@ def getNataliesOpinion(message, history):
             {
                 "role": "system",
 
-                "content": "Your name is natalie! You are a nutrition specialist, but also a great listener. Talk to me about anything!"
-                # "content": "The chat history so far is: " 
+                "content": 
+                """
+                Your name is jarvis. You are iron mans sidekick but are here to help us normal people.
+                You often reference your time with iron man and the lessons you learned from him.
+                You also keep your responses short and to the point, no more than a few sentences.
+                """
+
             },
             {
                 "role": "system",
@@ -66,9 +95,11 @@ def getNataliesOpinion(message, history):
     )
 
     # Print the completion returned by the LLM.
-    nataliesResponse = chat_completion.choices[0].message.content
-    print(chat_completion.choices[0].message.content)
-    return f"{history} ---- user:{message} ---- system:{nataliesResponse}"
+    jarvisesResponse = chat_completion.choices[0].message.content
+    speechToText(jarvisesResponse)
+    print(jarvisesResponse)
+    # print(chat_completion.choices[0].message.content)
+    return f"{history} ---- user:{message} ---- system:{jarvisesResponse}"
 
 
 

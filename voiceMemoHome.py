@@ -3,6 +3,7 @@ from my_whisper import translateAudio
 from dataSummarized import dataSummarized
 import keyboard as key
 from natalie import getNataliesOpinion
+from jarvis import getjarvisesOpinion
 
 def AiHelperHome():
     print()
@@ -15,6 +16,7 @@ def AiHelperHome():
     print("0. Exit")
     print("1. AI VoiceMemoSummerizer: AI that will help you summarize your thoughts.")
     print("2. Natalie: A nutrition specialist, but also a great listener. Talk to her about anything!")
+    print("3. Jarvis: A personal assistant that works with voice commands and can talk you through anything.")
     print()
 
     choice = input("Enter the number of the AI you would like to use: ").strip()
@@ -24,6 +26,8 @@ def AiHelperHome():
         voiceMemoHome()
     elif choice == '2':
         Natalie()
+    elif choice == '3':
+        Jarvis()
     else:
         print("Invalid choice. Please try again.")
         AiHelperHome()
@@ -71,6 +75,35 @@ def Natalie():
         print("(Remeber, you can quit by typing 'exit')")
         print()
     print("Thank you for talking to Natalie!")
+    print("Goodbye!")
+
+def Jarvis():
+    print("You are going to talk to Jarvis!")
+    textOrSpeech = input("Would you like to talk to Jarvis through text or speech? (text/speech): ").strip().lower()
+    print("When you want to end the conversation type 'exit'")
+    convoHistory = ""
+    while True:
+        print()
+        if textOrSpeech == 'text':
+            yourMessage = input("What do you want to ask him?  ")
+        elif textOrSpeech == 'speech':
+            recording()
+            print("Translating... Please wait.")
+            yourMessage = translateAudio("output.wav")
+        
+        if yourMessage == 'exit':
+            break
+
+        print("Jarvis is thinking...")
+        print()
+        print('----------- Jarvis\'s Response -----------')
+        
+        convoHistory = convoHistory + getjarvisesOpinion(yourMessage, convoHistory)
+
+        print()
+        print("(Remeber, you can quit by typing 'exit')")
+        print()
+    print("Thank you for talking to Jarvis!")
     print("Goodbye!")
     
 
