@@ -1,6 +1,5 @@
 import pyaudio
 import wave
-import keyboard
 import threading
 
 # Recording Parameters
@@ -36,6 +35,7 @@ def start_recording():
 
     # Run in a separate thread to avoid blocking
     threading.Thread(target=record, daemon=True).start()
+    # record()
 
 def stop_recording():
     """Stop recording and save audio file."""
@@ -56,16 +56,38 @@ def stop_recording():
 
     print(f"Audio saved as {OUTPUT_FILENAME}")
     audio.terminate()
+    stream.stop_stream()
+    stream.close()
+    audio.terminate()
 
 def recording():
+    # Restart PyAudio to avoid issues with multiple recordings
+    restart_pyaudio()
+
     # Listen for key presses
-    print("Press 'Enter' to start recording, 'Shift' to stop.")
-    keyboard.add_hotkey('enter', start_recording)
-    # keyboard.add_hotkey('shift', stop_recording)
-    # Keep the script running to listen for key events
-    keyboard.wait('shift')  # Press 'shift' to exit
+    print("Press 'Enter' to start recording, 'Enter' to stop.")
+    # thread = threading.Thread(target=start_recording, daemon=True)
+    key =  input("Press 'Enter' to start!  " )
+    while True:
+        if key == '':
+            break
+        else:
+            print("Press Enter to start recording.")
+    # thread.start()
+    start_recording()
+    key = input("Press 'Enter' to stop!  ")
+    while True:
+        if key == '':
+            break
+        else:
+            print("Press Enter to stop recording.")
     stop_recording()
     # print("Recording stopped.")
     # close the script
-    keyboard.unhook_all()
+    # keyboard.unhook_all()
     return
+
+def restart_pyaudio():
+    global audio
+    audio.terminate()  # Ensure previous instance is closed
+    audio = pyaudio.PyAudio()  # Restart PyAudio

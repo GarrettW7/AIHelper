@@ -2,3 +2,5 @@ groq
 keyboard
 pyaudio
 python-dotenv
+gtts
+openai-whisper

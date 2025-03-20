@@ -1,7 +1,6 @@
 from recording import recording
 from my_whisper import translateAudio
 from dataSummarized import dataSummarized
-import keyboard as key
 from natalie import getNataliesOpinion
 from jarvis import getjarvisesOpinion
 
@@ -79,7 +78,12 @@ def Natalie():
 
 def Jarvis():
     print("You are going to talk to Jarvis!")
-    textOrSpeech = input("Would you like to talk to Jarvis through text or speech? (text/speech): ").strip().lower()
+    while True:
+        textOrSpeech = input("Would you like to talk to Jarvis through text or speech? (text/speech): ").strip().lower()
+        if textOrSpeech == 'text' or textOrSpeech == 'speech':
+            break
+        else:
+            print("Invalid choice. Please try again.")
     print("When you want to end the conversation type 'exit'")
     convoHistory = ""
     while True:

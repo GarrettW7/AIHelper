@@ -1,5 +1,4 @@
 import whisper
-import subprocess
 import warnings
 
 # Suppress the FP16 warning
