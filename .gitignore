@@ -4,3 +4,4 @@
 *.json
 *.mp3
 *.wav
+*oldCode.py

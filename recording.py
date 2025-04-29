@@ -1,93 +1,52 @@
-import pyaudio
-import wave
+import numpy as np
+import sounddevice as sd
 import threading
+from scipy.io.wavfile import write
 
-# Recording Parameters
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
-CHUNK = 1024
-OUTPUT_FILENAME = "output.wav"
-
-# Global Variables
-audio = pyaudio.PyAudio()
-stream = None
-frames = []
-is_recording = False
-
-def start_recording():
-    """Start recording audio."""
-    global is_recording, stream, frames
-    if is_recording:
-        return  # Prevent multiple recordings
-
-    print("Recording started... Press 'Shift' to stop.")
-    is_recording = True
-    frames = []
-    
-    stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE,
-                        input=True, frames_per_buffer=CHUNK)
-
-    def record():
-        while is_recording:
-            data = stream.read(CHUNK)
-            frames.append(data)
-
-    # Run in a separate thread to avoid blocking
-    threading.Thread(target=record, daemon=True).start()
-    # record()
-
-def stop_recording():
-    """Stop recording and save audio file."""
-    global is_recording, stream
-    if not is_recording:
-        return
-    
+def testingNewRecording():
+    fs = 44100  # Sample rate
+    frames = []  # To store recorded audio chunks
     is_recording = False
-    stream.stop_stream()
-    stream.close()
-    
-    # Save to a file
-    with wave.open(OUTPUT_FILENAME, 'wb') as wf:
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(audio.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(b''.join(frames))
 
-    print(f"Audio saved as {OUTPUT_FILENAME}")
-    audio.terminate()
-    stream.stop_stream()
-    stream.close()
-    audio.terminate()
+    # Dynamically determine the number of input channels or default to 1
+    try:
+        input_device_info = sd.query_devices(kind='input')
+        channels = input_device_info['max_input_channels']
+        if channels < 1:
+            raise ValueError("No valid input channels found.")
+    except Exception as e:
+        print(f"Error detecting input channels: {e}. Defaulting to 1 channel.")
+        channels = 1
 
-def recording():
-    # Restart PyAudio to avoid issues with multiple recordings
-    restart_pyaudio()
+    def callback(indata, frame_count, time_info, status):
+        """Callback function to collect audio data."""
+        if status:
+            print(f"Recording error: {status}")
+        frames.append(indata.copy())
 
-    # Listen for key presses
-    print("Press 'Enter' to start recording, 'Enter' to stop.")
-    # thread = threading.Thread(target=start_recording, daemon=True)
-    key =  input("Press 'Enter' to start!  " )
-    while True:
-        if key == '':
-            break
-        else:
-            print("Press Enter to start recording.")
-    # thread.start()
-    start_recording()
-    key = input("Press 'Enter' to stop!  ")
-    while True:
-        if key == '':
-            break
-        else:
-            print("Press Enter to stop recording.")
-    stop_recording()
-    # print("Recording stopped.")
-    # close the script
-    # keyboard.unhook_all()
-    return
+    def record_audio():
+        nonlocal is_recording
+        print("Recording started. Press Enter to stop.")
+        is_recording = True
+        with sd.InputStream(samplerate=fs, channels=channels, callback=callback):
+            while is_recording:
+                sd.sleep(100)
 
-def restart_pyaudio():
-    global audio
-    audio.terminate()  # Ensure previous instance is closed
-    audio = pyaudio.PyAudio()  # Restart PyAudio
+    def save_audio():
+        print("Recording stopped. Saving file...")
+        audio_data = np.concatenate(frames, axis=0)
+        # Normalize and convert to int16 for WAV saving
+        audio_data = np.int16(audio_data / np.max(np.abs(audio_data)) * 32767)
+        write('output.wav', fs, audio_data)
+        print("File saved as output.wav")
+
+    print("Press Enter to start recording.")
+    input()
+    recording_thread = threading.Thread(target=record_audio, daemon=True)
+    recording_thread.start()
+
+    input("Recording... Press Enter to stop recording.")  # Wait for Enter key
+    print("Stopping recording...")
+    is_recording = False
+    recording_thread.join()  # Wait for recording thread to finish
+    save_audio()

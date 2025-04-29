@@ -9,7 +9,7 @@ load_dotenv()
 client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 
 def dataSummarized(message):
-
+    # print(message)
     chat_completion = client.chat.completions.create(
         #
         # Required parameters
@@ -62,4 +62,5 @@ def dataSummarized(message):
     )
 
     # Print the completion returned by the LLM.
+    # print(chat_completion.choices[0].message.content)
     return(chat_completion.choices[0].message.content)

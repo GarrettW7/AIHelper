@@ -1,8 +1,9 @@
-from recording import recording
+from recording import testingNewRecording
 from my_whisper import translateAudio
 from dataSummarized import dataSummarized
 from natalie import getNataliesOpinion
 from jarvis import getjarvisesOpinion
+
 
 def AiHelperHome():
     print()
@@ -34,11 +35,11 @@ def AiHelperHome():
 
 def voiceMemoHome():
     
-    recording()
+    # recording()
+    testingNewRecording()
     
     print("Translating... Please wait.")
     myText = translateAudio("output.wav")
-    
     print()
     print("--------  AI OVERVIEW --------")
     print()
@@ -69,7 +70,7 @@ def Natalie():
         print('----------- Natalie\'s Response -----------')
         
         convoHistory = convoHistory + getNataliesOpinion(yourMessage, convoHistory)
-
+ 
         print()
         print("(Remeber, you can quit by typing 'exit')")
         print()
@@ -91,7 +92,7 @@ def Jarvis():
         if textOrSpeech == 'text':
             yourMessage = input("What do you want to ask him?  ")
         elif textOrSpeech == 'speech':
-            recording()
+            testingNewRecording()
             print("Translating... Please wait.")
             yourMessage = translateAudio("output.wav")
         

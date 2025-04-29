@@ -70,34 +70,3 @@ def getNataliesOpinion(message, history):
     print(chat_completion.choices[0].message.content)
     return f"{history} ---- user:{message} ---- system:{nataliesResponse}"
 
-
-
-
-
-# messages=[
-#             # Set an optional system message. This sets the behavior of the
-#             # assistant and can be used to provide specific instructions for
-#             # how it should behave throughout the conversation.
-#             {
-#                 "role": "system",
-
-#                 "content": "Your name is natalie! You are a nutrition specialist, but also a great listener. Talk to me about anything!"
-#                 # "content": "The chat history so far is: " 
-#             },
-#             {
-#                 "role": "system",
-#                 "content": "The chat history so far is: " + history
-#             },
-#             # Set a user message for the assistant to respond to.
-#             {
-#                 "role": "user",
-#                 "content": f"{message}"
-#             }
-#         ],
-
-#  # Print the completion returned by the LLM.
-#     finalString = ""
-#     for message in stream:
-#         print(message['choices'][0]['delta']['content'], end='')
-#         finalString += message['choices'][0]['delta']['content']
-#     return f"{history} ---- user:{message} ---- system:{finalString}"
